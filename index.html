@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Frank · 炫酷视界</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* 避免拖动文字，炫酷感 */
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at 10% 20%, rgba(255,255,255,1) 0%, rgba(245,245,255,1) 100%);
+            font-family: 'Poppins', 'Segoe UI', 'Inter', system-ui, -apple-system, 'BlinkMacSystemFont', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 动态背景流光装饰 (炫酷粒子感) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 30% 40%, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 35px 35px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 主内容容器 */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            backdrop-filter: blur(2px);
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            transition: all 0.5s ease;
+            animation: contentFadeIn 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        /* 炫酷Frank文字 */
+        .glitch-text {
+            font-size: clamp(3.5rem, 15vw, 7rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(135deg, #0a0a2a 0%, #2b2b6b 40%, #a020f0 80%, #ff66cc 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: textShine 5s linear infinite, floatGlow 3s ease-in-out infinite;
+            text-shadow: 0 0 8px rgba(160, 32, 240, 0.4), 0 0 20px rgba(255, 102, 204, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translateY(0px); text-shadow: 0 0 5px #a020f0; }
+            50% { transform: translateY(-8px); text-shadow: 0 0 25px #ff66cc, 0 0 10px #a020f0; }
+            100% { transform: translateY(0px); text-shadow: 0 0 5px #a020f0; }
+        }
+
+        /* 额外伪影效果 (炫酷glitch感) */
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a2a 0%, #2b2b6b 40%, #a020f0 80%, #ff66cc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .glitch-text::before {
+            animation: glitchShift 0.3s infinite alternate;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        }
+
+        .glitch-text::after {
+            animation: glitchShift2 0.4s infinite alternate;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitchShift {
+            0% { transform: translate(-2px, -1px); opacity: 0.5; }
+            100% { transform: translate(2px, 1px); opacity: 0.8; }
+        }
+
+        @keyframes glitchShift2 {
+            0% { transform: translate(1px, 1px); opacity: 0.4; }
+            100% { transform: translate(-1px, -2px); opacity: 0.7; }
+        }
+
+        /* 按钮容器 */
+        .button-group {
+            margin-top: 2.5rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* 炫酷按钮样式 */
+        .cool-btn {
+            position: relative;
+            background: rgba(20, 20, 40, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem 2.2rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            color: #fff;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            overflow: hidden;
+            font-family: inherit;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(160, 32, 240, 0.2) inset;
+            z-index: 1;
+        }
+
+        .cool-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .cool-btn:hover::before {
+            left: 100%;
+        }
+
+        .cool-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(160, 32, 240, 0.4), 0 0 0 2px #ff66cc inset;
+            border-color: #ff66cc;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .btn-server {
+            background: linear-gradient(135deg, #1e1e3f, #2a1e4a);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #102b3f, #1e1a4a);
+        }
+
+        /* 全屏欢迎层 */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #ffffff 0%, #f0eefc 100%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            backdrop-filter: blur(0px);
+            transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s 1.2s;
+            will-change: opacity;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .intro-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* 炫酷欢迎动画 */
+        .intro-content {
+            text-align: center;
+            transform: scale(0.9);
+            animation: introPop 1s ease forwards;
+        }
+
+        @keyframes introPop {
+            0% { opacity: 0; transform: scale(0.8); filter: blur(4px);}
+            80% { opacity: 1; transform: scale(1.05);}
+            100% { opacity: 1; transform: scale(1); filter: blur(0);}
+        }
+
+        .intro-logo {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #a020f0, #ff66cc, #3a0ca3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: 5px;
+            animation: pulseGlow 1.5s infinite;
+        }
+
+        .intro-sub {
+            font-size: 1.2rem;
+            color: #1a1a3a;
+            letter-spacing: 3px;
+            font-weight: 300;
+            background: rgba(0,0,0,0.05);
+            backdrop-filter: blur(4px);
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            display: inline-block;
+        }
+
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 0px #a020f0;}
+            100% { text-shadow: 0 0 20px #ff66cc, 0 0 5px #a020f0;}
+        }
+
+        /* 模态框遮罩 (炫酷卡片) */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+        }
+
+        .modal-mask.active {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s ease, visibility 0s 0s;
+        }
+
+        /* 炫酷模态框卡片 */
+        .modal-card {
+            background: rgba(25, 25, 45, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 48px;
+            width: 90%;
+            max-width: 550px;
+            padding: 2rem 1.8rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,102,204,0.3) inset;
+            transform: scale(0.95);
+            transition: transform 0.2s;
+            animation: modalFloatIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2) forwards;
+        }
+
+        @keyframes modalFloatIn {
+            from { transform: scale(0.9) translateY(30px); opacity: 0;}
+            to { transform: scale(1) translateY(0); opacity: 1;}
+        }
+
+        .modal-card h3 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff, #d9b4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .game-item {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            padding: 1rem 0.5rem;
+            text-align: center;
+            border-radius: 28px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+            letter-spacing: 1px;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+        }
+
+        .game-item:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(145deg, #a020f0, #ff66cc);
+            border-color: white;
+            box-shadow: 0 10px 25px #ff66cc80;
+        }
+
+        /* 平台选项卡片 */
+        .platform-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.2rem;
+            margin: 2rem 0 1rem;
+        }
+
+        .platform-card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 1rem 1.8rem;
+            border-radius: 60px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+            font-size: 1.2rem;
+            min-width: 110px;
+            border: 1px solid #ffffff66;
+        }
+
+        .platform-card.android {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            border-color: #a5d6a7;
+        }
+
+        .platform-card.ios, .platform-card.pc {
+            background: rgba(50,50,70,0.8);
+        }
+
+        .platform-card:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .badge-unsupported {
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            border-radius: 20px;
+            padding: 2px 8px;
+            margin-left: 6px;
+        }
+
+        .close-modal {
+            display: block;
+            width: fit-content;
+            margin: 1.2rem auto 0;
+            background: none;
+            border: 1px solid #aaa;
+            border-radius: 40px;
+            padding: 0.5rem 1.6rem;
+            color: #ddd;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            background: #ff66cc;
+            color: black;
+            border-color: white;
+        }
+
+        /* 自定义toast通知 */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            color: #ffd966;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            z-index: 3000;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            border-left: 4px solid #ff66cc;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+        }
+
+        .toast-notify.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 550px) {
+            .button-group {
+                gap: 1rem;
+            }
+            .cool-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 1rem;
+            }
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .modal-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 全屏欢迎界面 -->
+<div id="introOverlay" class="intro-overlay">
+    <div class="intro-content">
+        <div class="intro-logo" data-text="FRΛNK">✦ FRANK'S REALM ✦</div>
+        <div class="intro-sub">ENTER THE DIGITAL DIMENSION</div>
+        <div style="margin-top: 30px; font-size: 0.9rem; letter-spacing: 2px;">⚡ 即将为你揭幕 ⚡</div>
+    </div>
+</div>
+
+<!-- 主内容区域 -->
+<div class="main-content">
+    <div class="glitch-text" data-text="Frank">Frank</div>
+    <div class="button-group">
+        <button id="serverListBtn" class="cool-btn btn-server">📡 服务器列表</button>
+        <button id="downloadBtn" class="cool-btn btn-download">⬇️ 下载 APP</button>
+    </div>
+</div>
+
+<!-- 服务器列表模态框 -->
+<div id="serverModal" class="modal-mask">
+    <div class="modal-card">
+        <h3>✨ 游戏 ✨</h3>
+        <div class="games-grid" id="gameListContainer">
+            <!-- 动态js生成六边形游戏列表, 可静态也可动态, 我动态确保炫酷 -->
+        </div>
+        <button class="close-modal" data-close="serverModal">✖ 关闭</button>
+    </div>
+</div>
+
+<!-- 下载APP选项模态框 (平台选择) -->
+<div id="downloadModal" class="modal-mask">
+    <div class="modal-card">
+        <h3>📱 选择你的平台</h3>
+        <div class="platform-options">
+            <div class="platform-card android" data-platform="android">📱 Android <span style="font-size:0.7rem;">(可用)</span></div>
+            <div class="platform-card ios" data-platform="ios">🍎 iOS <span class="badge-unsupported">暂不支持</span></div>
+            <div class="platform-card pc" data-platform="pc">💻 PC <span class="badge-unsupported">暂不支持</span></div>
+        </div>
+        <button class="close-modal" data-close="downloadModal">✖ 返回</button>
+    </div>
+</div>
+
+<!-- 自定义toast容器 -->
+<div id="customToast" class="toast-notify">提示信息</div>
+
+<script>
+    (function() {
+        // ---------- 全屏欢迎逐渐关闭 ----------
+        const intro = document.getElementById('introOverlay');
+        if (intro) {
+            // 3秒后淡出逐渐关闭 (全屏优雅消失)
+            setTimeout(() => {
+                intro.classList.add('fade-out');
+                // 动画结束后移除DOM，防止遮挡交互
+                setTimeout(() => {
+                    if (intro && intro.parentNode) {
+                        intro.style.display = 'none';
+                        intro.remove();  // 完全删除，性能优雅
+                    }
+                }, 1300); // 等待淡出动画结束
+            }, 2600); // 停留2.6秒后开始淡出，总计约4秒体验完整
+        }
+
+        // 定义游戏列表
+        const games = [
+            { name: "⚔️ 剑斗", desc: "Fencing Duel" },
+            { name: "🥊 格斗", desc: "Fighting Arena" },
+            { name: "🏢 公寓", desc: "Apartment Life" },
+            { name: "🌀 V4", desc: "Virtual V4 World" },
+            { name: "🔒 监狱", desc: "Prison Break" },
+            { name: "🐐 GOAT", desc: "Greatest Of All Time" }
+        ];
+
+        // 渲染服务器列表 (炫酷网格)
+        const gameContainer = document.getElementById('gameListContainer');
+        if (gameContainer) {
+            gameContainer.innerHTML = '';
+            games.forEach(game => {
+                const gameDiv = document.createElement('div');
+                gameDiv.className = 'game-item';
+                // 添加微标emoji + 名字
+                gameDiv.innerHTML = `<strong>${game.name}</strong><div style="font-size:0.7rem; margin-top:5px; opacity:0.7;">${game.desc}</div>`;
+                // 点击每个游戏弹出toast展示效果 (炫酷交互)
+                gameDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showToast(`✨ ${game.name} 没有开启 `);
+                });
+                gameContainer.appendChild(gameDiv);
+            });
+        }
+
+        // 模态框管理
+        const serverModal = document.getElementById('serverModal');
+        const downloadModal = document.getElementById('downloadModal');
+
+        // 打开模态框函数
+        function openModal(modal) {
+            if (!modal) return;
+            modal.classList.add('active');
+            // 防止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modal) {
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // 关闭所有模态框的辅助 (通过data-close)
+        const allCloseBtns = document.querySelectorAll('[data-close]');
+        allCloseBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const modalId = btn.getAttribute('data-close');
+                if (modalId === 'serverModal') closeModal(serverModal);
+                if (modalId === 'downloadModal') closeModal(downloadModal);
+            });
+        });
+
+        // 点击遮罩层关闭模态框
+        [serverModal, downloadModal].forEach(modal => {
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal);
+                });
+            }
+        });
+
+        // 服务器列表按钮
+        const serverBtn = document.getElementById('serverListBtn');
+        if (serverBtn) {
+            serverBtn.addEventListener('click', () => {
+                openModal(serverModal);
+            });
+        }
+
+        // 下载APP按钮 -> 打开平台选择模态框
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                openModal(downloadModal);
+            });
+        }
+
+        // 平台卡片交互 (安卓跳转, iOS/PC 暂不支持)
+        const androidCard = document.querySelector('.platform-card.android');
+        const iosCard = document.querySelector('.platform-card.ios');
+        const pcCard = document.querySelector('.platform-card.pc');
+
+        // 安卓跳转链接
+        const ANDROID_LINK = "https://1814803794.share.123pan.cn/123pan/6MScVv-om7B";
+
+        if (androidCard) {
+            androidCard.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // 跳转到指定网站
+                window.open(ANDROID_LINK, '_blank');
+                // 可选关闭模态框，保持流畅
+                closeModal(downloadModal);
+                showToast('🚀 正在前往下载中心 ...');
+            });
+        }
+
+        // iOS不支持
+        if (iosCard) {
+            iosCard.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showToast('🍎 iOS 版本暂不支持，请期待后续更新~');
+            });
+        }
+
+        // PC不支持
+        if (pcCard) {
+            pcCard.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showToast('💻 PC 版本暂不支持，推荐使用安卓版本或敬请期待');
+            });
+        }
+
+        // 炫酷自定义toast 提示系统
+        let toastTimeout = null;
+        function showToast(message, duration = 2500) {
+            const toast = document.getElementById('customToast');
+            if (!toast) return;
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toast.textContent = message;
+            toast.classList.add('show');
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // 额外：键盘esc关闭模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (serverModal && serverModal.classList.contains('active')) closeModal(serverModal);
+                if (downloadModal && downloadModal.classList.contains('active')) closeModal(downloadModal);
+            }
+        });
+
+        // 初始控制页面滚动恢复( intro未消失时，body可能无滚动，但无影响)
+        // 另外在主内容加载前欢迎界面完全阻挡，下面的内容先隐藏也无伤大雅，但都是可见的，完美。
+        // 增加炫酷小光标粒子点缀? 提升白背景层次
+        // 添加一个动态光晕跟随鼠标效果(轻量级炫酷)
+        document.body.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            document.body.style.setProperty('--mouse-x', x);
+            document.body.style.setProperty('--mouse-y', y);
+        });
+        // 动态光晕背景 (径向渐变追随鼠标)
+        const styleDynamic = document.createElement('style');
+        styleDynamic.textContent = `
+            body {
+                --mouse-x: 0.5;
+                --mouse-y: 0.5;
+                transition: background 0.1s;
+                background: radial-gradient(circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%), rgba(255,255,245,1) 0%, #f9f3ff 70%, #ede2ff 100%);
+            }
+            .cool-btn {
+                transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+            }
+            .game-item {
+                transition: all 0.2s cubic-bezier(0.2, 0.9, 0.6, 1.1);
+            }
+        `;
+        document.head.appendChild(styleDynamic);
+        
+        // 更炫酷: 预判安卓跳转成功, 增加欢迎感
+        // 对于服务器列表显示所有游戏并且每个都有酷炫hover质感满足要求
+        // 额外: 中心Frank装饰闪烁 + 光效完毕。
+        console.log("Frank");
+    })();
+</script>
+</body>
+</html>
